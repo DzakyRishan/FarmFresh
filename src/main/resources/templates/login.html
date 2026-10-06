@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments/header :: head">
+        <title>Login - FarmFresh Market</title>
+    </div>
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    
+    <main class="main-content">
+        <div class="container">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <h2 class="auth-title">Login ke FarmFresh</h2>
+                    
+                    <div th:if="${param.error}" class="alert alert-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Username atau password salah!
+                    </div>
+                    
+                    <div th:if="${param.success}" class="alert alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        <span th:text="${param.success}"></span>
+                    </div>
+                    
+                    <form th:action="@{/login}" method="post" class="auth-form">
+                        <div class="form-group">
+                            <label for="username">
+                                <i class="fas fa-user"></i> Username
+                            </label>
+                            <input type="text" id="username" name="username" required 
+                                   class="form-control" placeholder="Masukkan username">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password">
+                                <i class="fas fa-lock"></i> Password
+                            </label>
+                            <input type="password" id="password" name="password" required 
+                                   class="form-control" placeholder="Masukkan password">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                    </form>
+                    
+                    <div class="auth-footer">
+                        <p>Belum punya akun? 
+                            <a th:href="@{/register}" class="auth-link">Daftar disini</a>
+                        </p>
+                        <p>Ingin jadi petani? 
+                            <a th:href="@{/register}" class="auth-link">Daftar sebagai Petani</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

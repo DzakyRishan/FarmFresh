@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments/header :: head">
+        <title>Dashboard Petani - FarmFresh Market</title>
+    </div>
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    
+    <main class="main-content">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1 class="page-title">Dashboard Petani</h1>
+                <a th:href="@{/farmer/product/add}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Tambah Produk Baru
+                </a>
+            </div>
+            
+            <!-- Stats Overview -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 th:text="${products != null ? products.size() : 0}">0</h3>
+                        <p>Total Produk</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 th:text="${orders != null ? orders.size() : 0}">0</h3>
+                        <p>Total Pesanan</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 th:text="${pendingOrders != null ? pendingOrders : 0}">0</h3>
+                        <p>Pesanan Pending</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 th:text="${totalRevenue != null ? 'Rp ' + #numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT') : 'Rp 0'}"></h3>
+                        <p>Total Pendapatan</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Products Management -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Produk Saya</h2>
+                </div>
+                
+                <div th:if="${products != null and !products.empty}">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nama Produk</th>
+                                <th>Kategori</th>
+                                <th>Harga</th>
+                                <th>Stok</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="product : ${products}">
+                                <td>
+                                    <div class="product-cell">
+                                        <div class="product-name" th:text="${product.name}"></div>
+                                        <div class="product-desc" th:text="${#strings.abbreviate(product.description, 50)}"></div>
+                                    </div>
+                                </td>
+                                <td th:text="${product.category}"></td>
+                                <td th:text="'Rp ' + ${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}"></td>
+                                <td>
+                                    <span th:classappend="${product.stock == 0} ? 'text-danger' : ''" 
+                                          th:text="${product.stock}"></span>
+                                </td>
+                                <td>
+                                    <span th:if="${product.stock > 0}" class="badge badge-success">Tersedia</span>
+                                    <span th:if="${product.stock == 0}" class="badge badge-danger">Habis</span>
+                                </td>
+                                <td class="actions">
+                                    <a th:href="@{/farmer/product/edit/{id}(id=${product.id})}" 
+                                       class="btn-action btn-edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a th:href="@{/farmer/product/delete/{id}(id=${product.id})}" 
+                                       class="btn-action btn-delete"
+                                       onclick="return confirm('Hapus produk ini?')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div th:if="${products == null or products.empty}" class="empty-state">
+                    <i class="fas fa-seedling fa-3x"></i>
+                    <h3>Belum Ada Produk</h3>
+                    <p>Tambahkan produk untuk mulai menjual di FarmFresh Market</p>
+                    <a th:href="@{/farmer/product/add}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Tambah Produk Pertama
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Recent Orders -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Pesanan Terbaru</h2>
+                    <a th:href="@{/orders/farmer}" class="btn btn-outline">Lihat Semua</a>
+                </div>
+                
+                <div th:if="${recentOrders != null and !recentOrders.empty}">
+                    <div class="orders-list">
+                        <div th:each="order : ${recentOrders}" class="order-item-card">
+                            <div class="order-header">
+                                <strong>Pesanan #<span th:text="${order.id}"></span></strong>
+                                <span th:text="${#dates.format(order.orderDate, 'dd MMM yyyy')}"></span>
+                            </div>
+                            <div class="order-info">
+                                <div class="customer">
+                                    <i class="fas fa-user"></i>
+                                    <span th:text="${order.customer != null ? order.customer.fullName : 'Customer'}"></span>
+                                </div>
+                                <div class="amount">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                    <span th:text="'Rp ' + ${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')}"></span>
+                                </div>
+                                <div th:classappend="'status status-' + ${order.status.toLowerCase()}" 
+                                     class="status" th:text="${order.status}"></div>
+                            </div>
+                            <div class="order-actions">
+                                <form th:action="@{/orders/{orderId}/status(orderId=${order.id})}" method="post">
+                                    <select name="status" onchange="this.form.submit()" class="status-select">
+                                        <option value="PENDING" th:selected="${order.status == 'PENDING'}">Pending</option>
+                                        <option value="PROCESSED" th:selected="${order.status == 'PROCESSED'}">Diproses</option>
+                                        <option value="SHIPPED" th:selected="${order.status == 'SHIPPED'}">Dikirim</option>
+                                        <option value="DELIVERED" th:selected="${order.status == 'DELIVERED'}">Selesai</option>
+                                    </select>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div th:if="${recentOrders == null or recentOrders.empty}" class="empty-state small">
+                    <i class="fas fa-shopping-bag fa-2x"></i>
+                    <p>Belum ada pesanan</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        function updateProductStock(productId) {
+            const newStock = prompt('Masukkan jumlah stok baru:');
+            if (newStock !== null && !isNaN(newStock)) {
+                window.location.href = `/farmer/product/${productId}/stock?quantity=${newStock}`;
+            }
+        }
+    </script>
+    
+    <div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

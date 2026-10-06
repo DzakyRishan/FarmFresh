@@ -1,0 +1,182 @@
+# ============================================
+# MAVEN
+# ============================================
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.properties
+
+# ============================================
+# IDE FILES
+# ============================================
+## Eclipse
+.classpath
+.project
+.settings/
+bin/
+*.launch
+
+## IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+*.ids
+*.orig
+out/
+
+## NetBeans
+nbproject/
+nbactions.xml
+nb-configuration.xml
+
+## VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+## Other IDEs
+*.swp
+*.swo
+*~
+
+## Local IDE / tool config
+.kiro/
+
+# ============================================
+# LOG FILES
+# ============================================
+logs/
+*.log
+log/
+*.log.*
+
+# Spring Boot Logs
+spring.log
+
+# ============================================
+# DATABASE
+# ============================================
+*.db
+*.sqlite
+*.h2.db
+hs_err_pid*
+
+# ============================================
+# OPERATING SYSTEM
+# ============================================
+## macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+## Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+## Linux
+*~
+
+# ============================================
+# APPLICATION SPECIFIC
+# ============================================
+# Uploaded files
+uploads/
+uploads/**/*
+!uploads/.gitkeep
+
+# Application properties (except default)
+application-*.properties
+!application.properties
+
+# Keystores and certificates
+*.keystore
+*.truststore
+*.p12
+*.pfx
+*.cer
+*.crt
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build outputs
+build/
+dist/
+out/
+release/
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# ============================================
+# TEST REPORTS
+# ============================================
+**/test-output/
+**/reports/
+**/test-results/
+**/surefire-reports/
+**/failsafe-reports/
+**/target/site/
+coverage/
+*.emma
+*.jcov
+*.exec
+
+# ============================================
+# TEMPORARY FILES
+# ============================================
+tmp/
+temp/
+*.tmp
+*.temp
+*.cache
+
+# ============================================
+# PACKAGE FILES
+# ============================================
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# ============================================
+# VIRTUAL MACHINES
+# ============================================
+.history
+.vagrant/
+*.box
+*.vdi
+*.vmdk
+*.vmx
+*.vmxf

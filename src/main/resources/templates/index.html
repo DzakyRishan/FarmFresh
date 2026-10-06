@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/header :: head">
+    <!-- HEAD DIGANTI OLEH FRAGMENT -->
+</head>
+
+<body>
+
+<!-- HEADER / NAVBAR -->
+<div th:replace="fragments/header :: header"></div>
+
+<main class="main-content">
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Sayur Segar Langsung dari Petani</h1>
+                <p>
+                    Dapatkan produk pertanian terbaik dengan kualitas premium,
+                    langsung dari kebun ke meja Anda.
+                </p>
+                <a th:href="@{/search}" class="btn btn-primary btn-lg">
+                    Belanja Sekarang <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="hero-image">
+                <img th:src="@{/image/vegetables.jpg}" alt="Fresh Vegetables">
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUK TERBARU -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Produk Terbaru</h2>
+
+            <div th:if="${products != null and !products.empty}" class="products-grid">
+
+                <div th:each="product : ${products}" class="product-card">
+
+                    <div class="product-image">
+                        <img th:src="@{/image/{img}(img=${product.imageUrl})}"
+                        th:alt="${product.name}">
+
+
+                        <span th:if="${product.stock == 0}" class="badge out-of-stock">Habis</span>
+                        <span th:if="${product.stock > 0 and product.stock <= 5}" class="badge low-stock">
+                            Stok Terbatas
+                        </span>
+                    </div>
+
+                    <div class="product-info">
+                        <h3 th:text="${product.name}"></h3>
+                        <p class="product-category" th:text="${product.category}"></p>
+                        <p class="product-description" th:text="${product.description}"></p>
+
+                        <div class="product-footer">
+                            <span class="product-price"
+                                  th:text="'Rp ' + ${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}"></span>
+                            <span class="product-stock"
+                                  th:text="'Stok: ' + ${product.stock}"></span>
+                        </div>
+
+                        <div class="product-actions">
+                            <a th:href="@{/product/{id}(id=${product.id})}"
+                               class="btn btn-outline btn-sm">
+                                Detail
+                            </a>
+
+                            <th:block th:if="${user != null and user.role == 'CUSTOMER' and product.stock > 0}">
+                                <form th:action="@{/cart/add}" method="post" style="display:inline;">
+                                    <input type="hidden" name="productId" th:value="${product.id}">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-cart-plus"></i> Tambah
+                                    </button>
+                                </form>
+                            </th:block>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- EMPTY STATE -->
+            <div th:if="${products == null or products.empty}" class="empty-state">
+                <i class="fas fa-seedling fa-3x"></i>
+                <h3>Belum ada produk tersedia</h3>
+                <p>Produk akan segera hadir</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- KATEGORI -->
+    <section class="section section-light">
+        <div class="container">
+            <h2 class="section-title">Kategori Produk</h2>
+
+            <div class="categories">
+                <a th:href="@{/search(category='SAYURAN')}"
+                class="category-card"
+                th:classappend="${selectedCategory == 'SAYURAN'} ? ' active' : ''">
+                    <i class="fas fa-carrot"></i>
+                    <h3>Sayuran</h3>
+                </a>
+
+                <a th:href="@{/search(category='BUAH')}"
+                class="category-card"
+                th:classappend="${selectedCategory == 'BUAH'} ? ' active' : ''">
+                    <i class="fas fa-apple-alt"></i>
+                    <h3>Buah-buahan</h3>
+                </a>
+
+                <a th:href="@{/search(category='BUMBU')}"
+                class="category-card"
+                th:classappend="${selectedCategory == 'BUMBU'} ? ' active' : ''">
+                    <i class="fas fa-pepper-hot"></i>
+                    <h3>Bumbu</h3>
+                </a>
+
+                <a th:href="@{/search}"
+                class="category-card"
+                th:classappend="${selectedCategory == null} ? ' active' : ''">
+                    <i class="fas fa-seedling"></i>
+                    <h3>Semua Produk</h3>
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- FOOTER -->
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

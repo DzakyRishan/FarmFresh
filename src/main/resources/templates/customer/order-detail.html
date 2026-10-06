@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments/header :: head">
+        <title th:text="'Detail Pesanan #' + ${order?.id} + ' - FarmFresh Market'">Detail Pesanan</title>
+    </div>
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">Detail Pesanan</h1>
+                <a th:href="@{/orders/my-orders}" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Daftar Pesanan
+                </a>
+            </div>
+            
+            <div th:if="${order != null}" class="order-detail-container">
+                <!-- Order Header -->
+                <div class="order-header-card">
+                    <div class="order-info">
+                        <div class="order-id">
+                            <h3>Pesanan #<span th:text="${order.id}"></span></h3>
+                            <p class="order-date" th:text="${#temporals.format(order.orderDate, 'dd MMMM yyyy HH:mm')}"></p>
+                        </div>
+                        <div class="order-status">
+                            <span th:classappend="'status status-' + ${order.status.toLowerCase()}" 
+                                  class="status" th:text="${order.status}"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="order-total">
+                        <span>Total Pesanan:</span>
+                        <strong th:text="'Rp ' + ${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')}"></strong>
+                    </div>
+                </div>
+                
+                <!-- Shipping Information -->
+                <div class="info-card">
+                    <h3><i class="fas fa-truck"></i> Informasi Pengiriman</h3>
+                    <div class="info-content">
+                        <p><strong>Alamat Pengiriman:</strong> <span th:text="${order.shippingAddress}"></span></p>
+                        <p><strong>Metode Pembayaran:</strong> Bayar di Tempat (COD)</p>
+                        <p><strong>Estimasi Pengiriman:</strong> 1-3 hari kerja setelah pesanan diproses</p>
+                    </div>
+                </div>
+                
+                <!-- Order Items -->
+                <div class="info-card">
+                    <h3><i class="fas fa-shopping-bag"></i> Item Pesanan</h3>
+                    <div class="order-items-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Produk</th>
+                                    <th>Harga Satuan</th>
+                                    <th>Jumlah</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="item : ${order.items}">
+                                    <td class="product-cell">
+                                        <div class="product-name" th:text="${item.product != null ? item.product.name : 'Produk'}"></div>
+                                        <div th:if="${item.product != null}">
+                                            <div th:if="${not #strings.isEmpty(item.product.description)}"
+                                                class="product-desc"
+                                                th:text="${#strings.abbreviate(item.product.description, 50)}">
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="price" th:text="'Rp ' + ${#numbers.formatDecimal(item.priceAtTime, 0, 'COMMA', 0, 'POINT')}"></td>
+                                    <td class="quantity" th:text="${item.quantity}"></td>
+                                    <td class="subtotal" th:text="'Rp ' + ${#numbers.formatDecimal(item.subtotal, 0, 'COMMA', 0, 'POINT')}"></td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-right"><strong>Total:</strong></td>
+                                    <td class="total-amount" th:text="'Rp ' + ${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')}"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Order Timeline -->
+                <div class="info-card">
+                    <h3><i class="fas fa-history"></i> Timeline Pesanan</h3>
+                    <div class="timeline">
+                        <div class="timeline-step" th:classappend="${order.status == 'PENDING' or order.status == 'PROCESSED' or order.status == 'SHIPPED' or order.status == 'DELIVERED'} ? 'completed' : ''">
+                            <div class="step-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="step-content">
+                                <h4>Pesanan Dibuat</h4>
+                                <p th:text="${#temporals.format(order.orderDate, 'dd MMM yyyy HH:mm')}"></p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step" th:classappend="${order.status == 'PROCESSED' or order.status == 'SHIPPED' or order.status == 'DELIVERED'} ? 'completed' : ''">
+                            <div class="step-icon">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <div class="step-content">
+                                <h4>Diproses Petani</h4>
+                                <p th:if="${order.status == 'PROCESSED' or order.status == 'SHIPPED' or order.status == 'DELIVERED'}">
+                                    Pesanan sedang dipersiapkan oleh petani
+                                </p>
+                                <p th:unless="${order.status == 'PROCESSED' or order.status == 'SHIPPED' or order.status == 'DELIVERED'}">
+                                    Menunggu diproses
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step" th:classappend="${order.status == 'SHIPPED' or order.status == 'DELIVERED'} ? 'completed' : ''">
+                            <div class="step-icon">
+                                <i class="fas fa-shipping-fast"></i>
+                            </div>
+                            <div class="step-content">
+                                <h4>Dalam Pengiriman</h4>
+                                <p th:if="${order.status == 'SHIPPED' or order.status == 'DELIVERED'}">
+                                    Produk sedang dalam perjalanan
+                                </p>
+                                <p th:unless="${order.status == 'SHIPPED' or order.status == 'DELIVERED'}">
+                                    Belum dikirim
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step" th:classappend="${order.status == 'DELIVERED'} ? 'completed' : ''">
+                            <div class="step-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="step-content">
+                                <h4>Terkirim</h4>
+                                <p th:if="${order.status == 'DELIVERED'}">
+                                    Pesanan telah sampai
+                                </p>
+                                <p th:unless="${order.status == 'DELIVERED'}">
+                                    Belum sampai
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Order Actions -->
+                <div class="order-actions">
+                    <div class="actions-info">
+                        <p><i class="fas fa-info-circle"></i> Jika ada pertanyaan tentang pesanan ini, silakan hubungi customer service.</p>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <th:block th:if="${order.status == 'PENDING'}">
+                            <a th:href="@{/orders/{id}/cancel(id=${order.id})}" 
+                               class="btn btn-secondary"
+                               onclick="return confirm('Yakin ingin membatalkan pesanan ini?')">
+                                <i class="fas fa-times"></i> Batalkan Pesanan
+                            </a>
+                        </th:block>
+                        
+                        <a th:href="@{/}" class="btn btn-outline">
+                            <i class="fas fa-store"></i> Lanjut Belanja
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div th:unless="${order != null}" class="empty-state">
+                <i class="fas fa-exclamation-circle fa-3x"></i>
+                <h3>Pesanan tidak ditemukan</h3>
+                <p>Pesanan yang Anda cari tidak tersedia atau Anda tidak memiliki akses.</p>
+                <a th:href="@{/orders/my-orders}" class="btn btn-primary">Lihat Pesanan Saya</a>
+            </div>
+        </div>
+    </main>
+    
+    <style>
+        .order-detail-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .order-header-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .order-info {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .order-id h3 {
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        
+        .order-date {
+            color: #7f8c8d;
+            margin: 0;
+        }
+        
+        .order-total {
+            text-align: right;
+        }
+        
+        .order-total span {
+            display: block;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        
+        .order-total strong {
+            font-size: 24px;
+            color: #27ae60;
+        }
+        
+        .info-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .info-card h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-card h3 i {
+            color: #27ae60;
+        }
+        
+        .order-items-table {
+            overflow-x: auto;
+        }
+        
+        .order-items-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .order-items-table th {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .order-items-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+        
+        .product-cell .product-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .product-cell .product-desc {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .price, .quantity, .subtotal {
+            white-space: nowrap;
+        }
+        
+        .total-amount {
+            font-size: 18px;
+            font-weight: bold;
+            color: #27ae60;
+        }
+        
+        .text-right {
+            text-align: right;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e0e0e0;
+        }
+        
+        .timeline-step {
+            position: relative;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        
+        .timeline-step.completed .step-icon {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .timeline-step.completed::before {
+            background: #27ae60;
+        }
+        
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            background: #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7f8c8d;
+            z-index: 1;
+            flex-shrink: 0;
+        }
+        
+        .step-content h4 {
+            margin: 0 0 5px 0;
+            color: #2c3e50;
+        }
+        
+        .step-content p {
+            margin: 0;
+            color: #7f8c8d;
+        }
+        
+        .order-actions {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .actions-info {
+            flex: 1;
+        }
+        
+        .actions-info p {
+            margin: 0;
+            color: #7f8c8d;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .actions-info i {
+            color: #3498db;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .order-header-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            
+            .order-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .order-total {
+                text-align: left;
+            }
+            
+            .order-actions {
+                flex-direction: column;
+                gap: 20px;
+                align-items: stretch;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+    
+    <div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

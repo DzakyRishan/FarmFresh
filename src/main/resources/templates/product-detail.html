@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments/header :: head">
+        <title th:text="${product.name} + ' - FarmFresh Market'">Product Detail</title>
+    </div>
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    
+    <main class="main-content">
+        <div class="container">
+            <div class="product-detail-container">
+                <div th:if="${product != null}">
+                    <!-- Breadcrumb -->
+                    <div class="breadcrumb">
+                        <a th:href="@{/}">Home</a> / 
+                        <a th:href="@{/search}">Produk</a> / 
+                        <span th:text="${product.category}"></span> / 
+                        <span th:text="${product.name}"></span>
+                    </div>
+                    
+                    <div class="product-detail">
+                        <div class="product-images">
+                            <div class="main-image">
+                                <img th:src="${product.imageUrl} ?: '/images/default-product.jpg'" 
+                                     th:alt="${product.name}">
+                            </div>
+                        </div>
+                        
+                        <div class="product-info">
+                            <h1 th:text="${product.name}"></h1>
+                            <div class="product-meta">
+                                <span class="category" th:text="${product.category}"></span>
+                                <span class="farmer">
+                                    <i class="fas fa-user-tie"></i>
+                                    <span th:text="${product.farmer != null ? product.farmer.fullName : 'Petani'}"></span>
+                                </span>
+                            </div>
+                            
+                            <div class="product-price">
+                                <span class="price" th:text="'Rp ' + ${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}"></span>
+                                <span th:class="${product.stock > 0 ? 'stock-available' : 'stock-unavailable'}" 
+                                      th:text="${product.stock > 0 ? 'Stok: ' + product.stock : 'Stok Habis'}">
+                                </span>
+                            </div>
+                            
+                            <div class="product-description">
+                                <h3>Deskripsi</h3>
+                                <p th:text="${product.description} ?: 'Tidak ada deskripsi'"></p>
+                            </div>
+                            
+                            <th:block th:if="${user != null and user.role == 'CUSTOMER'}">
+                                <div class="product-actions">
+                                    <form th:action="@{/cart/add}" method="post" class="add-to-cart-form">
+                                        <input type="hidden" name="productId" th:value="${product.id}">
+                                        
+                                        <div class="quantity-selector">
+                                            <label for="quantity">Jumlah:</label>
+                                            <div class="quantity-control">
+                                                <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
+                                                <input type="number" id="quantity" name="quantity" 
+                                                       value="1" min="1" th:max="${product.stock}"
+                                                       class="qty-input">
+                                                <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
+                                            </div>
+                                            <span class="max-stock" th:if="${product.stock > 0}">
+                                                Maks: <span th:text="${product.stock}"></span>
+                                            </span>
+                                        </div>
+                                        
+                                        <th:block th:if="${product.stock > 0}">
+                                            <button type="submit" class="btn btn-primary btn-lg">
+                                                <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+                                            </button>
+                                        </th:block>
+                                        <th:block th:unless="${product.stock > 0}">
+                                            <button type="button" class="btn btn-secondary btn-lg" disabled>
+                                                <i class="fas fa-times-circle"></i> Stok Habis
+                                            </button>
+                                        </th:block>
+                                    </form>
+                                </div>
+                            </th:block>
+                            
+                            <th:block th:if="${user != null and user.role == 'FARMER' and user.id == product.farmerId}">
+                                <div class="farmer-actions">
+                                    <a th:href="@{/farmer/product/edit/{id}(id=${product.id})}" 
+                                       class="btn btn-outline">
+                                        <i class="fas fa-edit"></i> Edit Produk
+                                    </a>
+                                </div>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+                
+                <div th:unless="${product != null}" class="empty-state">
+                    <i class="fas fa-exclamation-circle fa-3x"></i>
+                    <h3>Produk tidak ditemukan</h3>
+                    <p>Produk yang Anda cari tidak tersedia.</p>
+                    <a th:href="@{/}" class="btn btn-primary">Kembali ke Home</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        function increaseQty() {
+            const input = document.getElementById('quantity');
+            const max = parseInt(input.max);
+            if (input.value < max) {
+                input.value = parseInt(input.value) + 1;
+            }
+        }
+        
+        function decreaseQty() {
+            const input = document.getElementById('quantity');
+            if (input.value > 1) {
+                input.value = parseInt(input.value) - 1;
+            }
+        }
+    </script>
+    
+    <div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

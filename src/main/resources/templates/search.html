@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments/header :: head">
+        <title th:text="'Cari Produk - FarmFresh Market'">Search Products</title>
+    </div>
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    
+    <main class="main-content">
+        <div class="container">
+
+             <!-- NOTIFIKASI -->
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i>
+                <span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle"></i>
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <!-- END NOTIFIKASI -->
+
+            <!-- Search Bar -->
+            <div class="search-container">
+                <form th:action="@{/search}" method="get" class="search-bar">
+            <div class="search-input">
+                <i class="fas fa-search"></i>
+                <input 
+                    type="text"
+                    name="keyword"
+                    placeholder="Cari produk sayur, buah, dll"
+                    th:value="${keyword}">
+            </div>
+
+            <select name="category">
+                <option value="">Semua Kategori</option>
+                <option value="SAYURAN" th:selected="${selectedCategory == 'SAYURAN'}">Sayuran</option>
+                <option value="BUAH" th:selected="${selectedCategory == 'BUAH'}">Buah</option>
+                <option value="BUMBU" th:selected="${selectedCategory == 'BUMBU'}">Bumbu</option>
+            </select>
+
+            <select name="sort">
+                <option value="latest">Terbaru</option>
+                <option value="price_asc">Harga Termurah</option>
+                <option value="price_desc">Harga Termahal</option>
+                <option value="name_asc">Nama A–Z</option>
+            </select>
+
+
+            <button type="submit" class="btn-search">
+                Cari
+            </button>
+            </form>
+            </div>
+            
+            <!-- Search Results -->
+            <div class="search-results">
+                <div th:if="${keyword != null and !keyword.empty}">
+                    <h2 class="results-title">
+                        Hasil pencarian untuk "<span th:text="${keyword}"></span>"
+                        <small th:text="'(' + ${products != null ? products.size() : 0} + ' produk ditemukan)'"></small>
+                    </h2>
+                </div>
+                
+                <div th:if="${products != null and !products.empty}" class="products-grid">
+                    <div th:each="product : ${products}" class="product-card">
+                        <div class="product-image">
+                            <img th:src="@{/image/{img}(img=${product.imageUrl})}"
+                                th:alt="${product.name}">
+                            <span th:if="${product.stock == 0}" class="badge out-of-stock">Habis</span>
+                        </div>
+                        <div class="product-info">
+                            <h3>
+                                <a th:href="@{/product/{id}(id=${product.id})}" 
+                                   th:text="${product.name}"></a>
+                            </h3>
+                            <p class="product-category" th:text="${product.category}"></p>
+                            <p class="product-description" th:text="${#strings.abbreviate(product.description, 80)}"></p>
+                            <div class="product-footer">
+                                <span class="product-price" th:text="'Rp ' + ${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}"></span>
+                                <span class="product-stock" th:text="'Stok: ' + ${product.stock}"></span>
+                            </div>
+                            <div class="product-actions">
+                                <a th:href="@{/product/{id}(id=${product.id})}" 
+                                   class="btn btn-outline btn-sm">Detail</a>
+                                <th:block th:if="${user != null and user.role == 'CUSTOMER' and product.stock > 0}">
+                                    <form th:action="@{/cart/add}" method="post" style="display: inline;">
+                                        <input type="hidden" name="productId" th:value="${product.id}">
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-cart-plus"></i> Tambah
+                                        </button>
+                                    </form>
+                                </th:block>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div th:if="${products == null or products.empty}" class="empty-state">
+                    <i class="fas fa-search fa-3x"></i>
+                    <h3 th:if="${keyword != null}">Produk tidak ditemukan</h3>
+                    <h3 th:unless="${keyword != null}">Belum ada produk</h3>
+                    <p>Coba gunakan kata kunci lain atau lihat semua produk</p>
+                    <a th:href="@{/}" class="btn btn-primary">Lihat Semua Produk</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <div th:replace="fragments/footer :: footer"></div>
+
+    <script>
+    setTimeout(() => {
+        const alert = document.querySelector('.alert');
+        if (alert) alert.remove();
+    }, 3000);
+    </script>
+
+</body>
+</html>

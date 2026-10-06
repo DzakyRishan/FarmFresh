@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments/header :: head">
+        <title>Kontak Kami - FarmFresh Market</title>
+    </div>
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">Kontak Kami</h1>
+                <p class="page-subtitle">Hubungi kami untuk pertanyaan, saran, atau kerjasama</p>
+            </div>
+            
+            <div class="contact-container">
+                <div class="contact-grid">
+                    <!-- Contact Info -->
+                    <div class="contact-info">
+                        <h3>Informasi Kontak</h3>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Alamat Kantor</h4>
+                                <p>Jl. Pertanian No. 123, Gedung Agribisnis Lantai 5<br>
+                                   Jakarta Selatan 12345, Indonesia</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Telepon</h4>
+                                <p>021-1234-5678 (Customer Service)<br>
+                                   021-9876-5432 (Kerjasama)</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Email</h4>
+                                <p>info@farmfreshmarket.com (Umum)<br>
+                                   support@farmfreshmarket.com (Bantuan Teknis)<br>
+                                   partnership@farmfreshmarket.com (Kerjasama)</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Jam Operasional</h4>
+                                <p>Senin - Jumat: 08:00 - 17:00 WIB<br>
+                                   Sabtu: 08:00 - 15:00 WIB<br>
+                                   Minggu & Hari Libur: Tutup</p>
+                            </div>
+                        </div>
+                        
+                        <div class="social-media">
+                            <h4>Ikuti Kami</h4>
+                            <div class="social-icons">
+                                <a href="#" class="social-icon">
+                                    <i class="fab fa-facebook"></i>
+                                </a>
+                                <a href="#" class="social-icon">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="social-icon">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="social-icon">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
+                                <a href="#" class="social-icon">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Form -->
+                    <div class="contact-form-container">
+                        <h3>Kirim Pesan</h3>
+                        <p>Punya pertanyaan atau ingin memberikan saran? Silakan isi form di bawah ini.</p>
+                        
+                        <form id="contactForm" class="contact-form">
+                            <div class="form-group">
+                                <label for="name">Nama Lengkap *</label>
+                                <input type="text" id="name" name="name" required class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" name="email" required class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="phone">No. Telepon</label>
+                                <input type="tel" id="phone" name="phone" class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="subject">Subjek *</label>
+                                <select id="subject" name="subject" required class="form-control">
+                                    <option value="">Pilih subjek</option>
+                                    <option value="general">Pertanyaan Umum</option>
+                                    <option value="order">Masalah Pesanan</option>
+                                    <option value="product">Informasi Produk</option>
+                                    <option value="farmer">Pendaftaran Petani</option>
+                                    <option value="partnership">Kerjasama Bisnis</option>
+                                    <option value="feedback">Saran & Masukan</option>
+                                    <option value="other">Lainnya</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="message">Pesan *</label>
+                                <textarea id="message" name="message" required rows="5" class="form-control"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fas fa-paper-plane"></i> Kirim Pesan
+                            </button>
+                        </form>
+                        
+                        <div id="formMessage" class="alert" style="display: none;"></div>
+                    </div>
+                </div>
+                
+                <!-- FAQ Section -->
+                <div class="faq-section">
+                    <h3>Pertanyaan yang Sering Diajukan (FAQ)</h3>
+                    
+                    <div class="faq-list">
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <h4>Bagaimana cara mendaftar sebagai petani di FarmFresh?</h4>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Klik tombol "Register" di halaman utama, pilih "Daftar sebagai Petani", isi formulir pendaftaran, dan tim kami akan menghubungi Anda untuk verifikasi dalam 1-2 hari kerja.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <h4>Berapa lama waktu pengiriman produk?</h4>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Produk dikirim langsung dari petani. Waktu pengiriman biasanya 1-3 hari kerja tergantung lokasi. Untuk area Jabodetabek, pengiriman bisa dalam 1 hari.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <h4>Bagaimana jika produk yang diterima tidak sesuai?</h4>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Silakan hubungi customer service dalam 24 jam setelah menerima produk. Kami akan proses pengembalian atau penggantian produk sesuai kebijakan kami.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <h4>Apakah ada biaya pendaftaran untuk petani?</h4>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Tidak ada biaya pendaftaran. FarmFresh hanya mengambil komisi kecil dari setiap transaksi yang berhasil.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <h4>Bagaimana sistem pembayaran untuk petani?</h4>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Pembayaran akan ditransfer ke rekening petani setiap minggu untuk semua pesanan yang sudah "DELIVERED".</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        // FAQ Toggle
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const icon = question.querySelector('i');
+                
+                answer.classList.toggle('active');
+                icon.classList.toggle('fa-chevron-down');
+                icon.classList.toggle('fa-chevron-up');
+            });
+        });
+        
+        // Contact Form Submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value
+            };
+            
+            const formMessage = document.getElementById('formMessage');
+            
+            // Simulasi pengiriman (dalam real app, ini akan POST ke backend)
+            formMessage.textContent = 'Terima kasih atas pesan Anda! Kami akan menghubungi Anda dalam 1-2 hari kerja.';
+            formMessage.className = 'alert alert-success';
+            formMessage.style.display = 'block';
+            
+            // Reset form
+            this.reset();
+            
+            // Scroll ke message
+            formMessage.scrollIntoView({ behavior: 'smooth' });
+            
+            // Auto hide message after 5 seconds
+            setTimeout(() => {
+                formMessage.style.display = 'none';
+            }, 5000);
+        });
+    </script>
+    
+    <style>
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .contact-info {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background: #e8f5e9;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .contact-icon i {
+            font-size: 20px;
+            color: #27ae60;
+        }
+        
+        .contact-details h4 {
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        
+        .contact-details p {
+            color: #7f8c8d;
+            margin: 0;
+        }
+        
+        .social-media {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: #f8f9fa;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7f8c8d;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            background: #27ae60;
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .contact-form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .contact-form-container h3 {
+            margin-bottom: 10px;
+        }
+        
+        .contact-form-container > p {
+            color: #7f8c8d;
+            margin-bottom: 25px;
+        }
+        
+        .faq-section {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .faq-section h3 {
+            margin-bottom: 30px;
+        }
+        
+        .faq-list {
+            border-top: 1px solid #eee;
+        }
+        
+        .faq-item {
+            border-bottom: 1px solid #eee;
+        }
+        
+        .faq-question {
+            padding: 20px 0;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-question h4 {
+            margin: 0;
+            font-size: 16px;
+            color: #2c3e50;
+        }
+        
+        .faq-question i {
+            color: #27ae60;
+            transition: transform 0.3s ease;
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .faq-answer.active {
+            max-height: 200px;
+            padding-bottom: 20px;
+        }
+        
+        .faq-answer p {
+            margin: 0;
+            color: #7f8c8d;
+        }
+        
+        @media (max-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-item {
+                flex-direction: column;
+            }
+            
+            .contact-icon {
+                margin-bottom: 15px;
+                margin-right: 0;
+            }
+        }
+    </style>
+    
+    <div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

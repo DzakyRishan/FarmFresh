@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments/header :: head">
+        <title>Pesanan - FarmFresh Market</title>
+    </div>
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">Pesanan untuk Produk Saya</h1>
+                <a th:href="@{/farmer/dashboard}" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
+                </a>
+            </div>
+            
+            <!-- ===============================
+                Stats Overview (Dashboard)
+                =============================== -->
+            <div class="stats-grid">
+
+                <!-- Total Orders -->
+                <div class="stat-card">
+                    <div class="stat-icon bg-primary">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 th:text="${totalOrders} ?: 0">0</h3>
+                        <p>Total Pesanan</p>
+                    </div>
+                </div>
+
+                <!-- Pending -->
+                <div class="stat-card">
+                    <div class="stat-icon bg-warning">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 th:text="${pendingOrders} ?: 0">0</h3>
+                        <p>Pending</p>
+                    </div>
+                </div>
+
+                <!-- Diproses -->
+                <div class="stat-card">
+                    <div class="stat-icon bg-info">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 th:text="${processedOrders} ?: 0">0</h3>
+                        <p>Diproses</p>
+                    </div>
+                </div>
+
+                <!-- Dikirim -->
+                <div class="stat-card">
+                    <div class="stat-icon bg-secondary">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 th:text="${shippedOrders} ?: 0">0</h3>
+                        <p>Dikirim</p>
+                    </div>
+                </div>
+
+                <!-- Selesai -->
+                <div class="stat-card">
+                    <div class="stat-icon bg-success">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 th:text="${deliveredOrders} ?: 0">0</h3>
+                        <p>Selesai</p>
+                    </div>
+                </div>
+
+            </div>
+
+            
+            <!-- Filters -->
+            <div class="filters-section">
+
+                <!-- STATUS TABS -->
+                <div class="filter-tabs">
+                    <a th:href="@{/orders/farmer}"
+                    th:classappend="${param.status == null} ? 'active' : ''"
+                    class="filter-tab">Semua</a>
+
+                    <a th:href="@{/orders/farmer(status='PENDING')}"
+                    th:classappend="${param.status != null and param.status[0] == 'PENDING'} ? 'active' : ''"
+                    class="filter-tab">Pending</a>
+
+                    <a th:href="@{/orders/farmer(status='PROCESSED')}"
+                    th:classappend="${param.status != null and param.status[0] == 'PROCESSED'} ? 'active' : ''"
+                    class="filter-tab">Diproses</a>
+
+                    <a th:href="@{/orders/farmer(status='SHIPPED')}"
+                    th:classappend="${param.status != null and param.status[0] == 'SHIPPED'} ? 'active' : ''"
+                    class="filter-tab">Dikirim</a>
+
+                    <a th:href="@{/orders/farmer(status='DELIVERED')}"
+                    th:classappend="${param.status != null and param.status[0] == 'DELIVERED'} ? 'active' : ''"
+                    class="filter-tab">Selesai</a>
+                </div>
+
+                <!-- FILTER FORM -->
+                <form method="get" th:action="@{/orders/farmer}" class="filter-actions">
+
+                    <!-- PERTAHANKAN STATUS -->
+                    <input type="hidden" name="status" th:value="${param.status}"/>
+
+                    <!-- DATE FILTER -->
+                    <div class="date-filter">
+                        <input type="date"
+                            name="startDate"
+                            class="form-control-sm"
+                            th:value="${startDate}"/>
+
+                        <span>s/d</span>
+
+                        <input type="date"
+                            name="endDate"
+                            class="form-control-sm"
+                            th:value="${endDate}"/>
+
+                        <button type="submit" class="btn btn-outline btn-sm">
+                            <i class="fas fa-filter"></i> Filter
+                        </button>
+                    </div>
+
+                    <!-- SEARCH -->
+                    <div class="search-filter">
+                        <input type="text"
+                            name="keyword"
+                            placeholder="Cari nomor pesanan..."
+                            class="form-control-sm"
+                            th:value="${keyword}"/>
+
+                        <button type="submit" class="btn btn-outline btn-sm">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+
+            <!-- Orders List -->
+            <div th:if="${orders != null and !orders.empty}" class="farmer-orders-list">
+                <div class="orders-table-container">
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th>No. Pesanan</th>
+                                <th>Tanggal</th>
+                                <th>Customer</th>
+                                <th>Produk</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="order : ${orders}">
+                                <td class="order-id">
+                                    <strong>#<span th:text="${order.id}"></span></strong>
+                                </td>
+                                <td class="order-date">
+                                   <span th:text="${#temporals.format(order.orderDate, 'dd MMM yyyy HH:mm')}"></span>
+                                </td>
+                                <td class="customer-info">
+                                    <div class="customer-name" th:text="${order.customer != null ? order.customer.fullName : 'Customer'}"></div>
+                                    <div class="customer-phone" th:text="${order.customer != null ? order.customer.phone : ''}"></div>
+                                </td>
+                                <td class="products-list">
+                                    <div th:each="item : ${order.items}" th:if="${item.product != null and item.product.farmerId == user.id}">
+                                        <div class="product-item">
+                                            <span class="product-name" th:text="${item.product.name}"></span>
+                                            <span class="product-qty" th:text="'(' + ${item.quantity} + ')'"></span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="order-total">
+                                    <span class="total-amount"
+                                        th:text="'Rp ' + ${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')}">
+                                    </span>
+                                </td>
+
+                                <td class="order-status-cell">
+                                    <div class="status-wrapper">
+
+                                        <!-- DROPDOWN (SELAMA BELUM FINAL) -->
+                                        <form th:if="${order.status == 'PENDING' or order.status == 'PROCESSED'}"
+                                            th:action="@{/orders/{orderId}/status(orderId=${order.id})}"
+                                            method="post"
+                                            class="status-form">
+
+                                            <select name="status"
+                                                    class="status-select"
+                                                    onchange="this.form.submit()">
+                                                <option value="PENDING" th:selected="${order.status == 'PENDING'}">Pending</option>
+                                                <option value="PROCESSED" th:selected="${order.status == 'PROCESSED'}">Diproses</option>
+                                                <option value="SHIPPED" th:selected="${order.status == 'SHIPPED'}">Dikirim</option>
+                                            </select>
+                                        </form>                                        
+
+                                        <!-- BADGE -->
+                                         <span th:if="${order.status != 'PENDING' and order.status != 'PROCESSED'}"
+                                            class="status-badge"
+                                            th:classappend="' status-' + ${order.status.toLowerCase()}"
+                                            th:text="${order.status}">
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <td class="order-actions">
+                                    <div class="action-wrapper">
+                                        <a th:href="@{/orders/{orderId}/detail(orderId=${order.id})}"
+                                        class="btn-action btn-view" title="Lihat Detail">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+
+                                        <button type="button"
+                                                class="btn-action btn-message"
+                                                title="Kirim Pesan">
+                                            <i class="fas fa-comment"></i>
+                                        </button>
+
+                                        <a th:href="@{/orders/{orderId}/invoice(orderId=${order.id})}"
+                                        class="btn-action btn-invoice" title="Invoice">
+                                            <i class="fas fa-file-invoice"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Order Details Modal -->
+                <div th:each="order : ${orders}" class="order-detail-modal" th:id="'order-modal-' + ${order.id}">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Detail Pesanan #<span th:text="${order.id}"></span></h3>
+                            <button class="modal-close" th:onclick="'closeOrderModal(' + ${order.id} + ')'">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="order-info-grid">
+                                <div class="info-section">
+                                    <h4>Informasi Customer</h4>
+                                    <p><strong>Nama:</strong> <span th:text="${order.customer != null ? order.customer.fullName : 'Customer'}"></span></p>
+                                    <p><strong>Telepon:</strong> <span th:text="${order.customer != null ? order.customer.phone : '-'}"></span></p>
+                                    <p><strong>Email:</strong> <span th:text="${order.customer != null ? order.customer.email : '-'}"></span></p>
+                                </div>
+                                
+                                <div class="info-section">
+                                    <h4>Pengiriman</h4>
+                                    <p><strong>Alamat:</strong> <span th:text="${order.shippingAddress}"></span></p>
+                                    <p>
+                                        <strong>Tanggal Pesan:</strong>
+                                        <span th:text="${#temporals.format(order.orderDate, 'dd MMM yyyy')}"></span>
+                                    </p>
+
+                                </div>
+                                
+                                <div class="info-section">
+                                    <h4>Produk dari Anda</h4>
+                                    <div class="product-items">
+                                        <div th:each="item : ${order.items}" th:if="${item.product != null and item.product.farmerId == user.id}">
+                                            <div class="product-detail">
+                                                <span class="product-name" th:text="${item.product.name}"></span>
+                                                <div class="product-meta">
+                                                    <span th:text="${item.quantity} + ' x Rp ' + ${#numbers.formatDecimal(item.priceAtTime, 0, 'COMMA', 0, 'POINT')}"></span>
+                                                    <span class="product-subtotal" th:text="'Rp ' + ${#numbers.formatDecimal(item.subtotal, 0, 'COMMA', 0, 'POINT')}"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Empty State -->
+            <div th:if="${orders == null or orders.empty}" class="empty-state">
+                <i class="fas fa-shopping-bag fa-3x"></i>
+                <h3>Belum Ada Pesanan</h3>
+                <p th:if="${param.status != null}">Tidak ada pesanan dengan status "<span th:text="${param.status}"></span>"</p>
+                <p th:if="${param.status == null}">Belum ada yang memesan produk dari Anda</p>
+                <div class="empty-actions">
+                    <a th:href="@{/farmer/dashboard}" class="btn btn-primary">
+                        <i class="fas fa-seedling"></i> Kelola Produk
+                    </a>
+                    <a th:href="@{/}" class="btn btn-outline">
+                        <i class="fas fa-store"></i> Lihat Marketplace
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Export Options -->
+            <div th:if="${orders != null and !orders.empty}" class="export-section">
+                <div class="export-options">
+                    <h4>Ekspor Data:</h4>
+                    <div class="export-buttons">
+                        <button class="btn btn-outline btn-sm">
+                            <i class="fas fa-file-excel"></i> Excel
+                        </button>
+                        <button class="btn btn-outline btn-sm">
+                            <i class="fas fa-file-pdf"></i> PDF
+                        </button>
+                        <button class="btn btn-outline btn-sm">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="pagination">
+                    <button class="page-btn" disabled>
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <span class="page-info">1-10 dari <span th:text="${totalOrders}">0</span> pesanan</span>
+                    <button class="page-btn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Message Modal -->
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Kirim Pesan ke Customer</h3>
+                <button class="modal-close" onclick="closeMessageModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="messageSubject">Subjek</label>
+                    <input type="text" id="messageSubject" class="form-control" 
+                           value="Update Pesanan #" placeholder="Subjek pesan">
+                </div>
+                <div class="form-group">
+                    <label for="messageContent">Pesan</label>
+                    <textarea id="messageContent" rows="5" class="form-control" 
+                              placeholder="Tulis pesan untuk customer..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="sendEmail">
+                        <span>Kirim juga via email</span>
+                    </label>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="closeMessageModal()">Batal</button>
+                    <button class="btn btn-primary" onclick="sendMessageToCustomer()">
+                        <i class="fas fa-paper-plane"></i> Kirim Pesan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Order Status Update
+        
+        // Store original status values
+        
+        // View Order Details
+        function viewOrderDetails(orderId) {
+            const modal = document.getElementById('order-modal-' + orderId);
+            if (modal) {
+                modal.style.display = 'block';
+            }
+        }
+        
+        function closeOrderModal(orderId) {
+            const modal = document.getElementById('order-modal-' + orderId);
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        // Message Modal
+        
+        
+        function sendMessage(customerId) {
+            currentCustomerId = customerId;
+            document.getElementById('messageModal').style.display = 'block';
+        }
+        
+        function closeMessageModal() {
+            document.getElementById('messageModal').style.display = 'none';
+            currentCustomerId = null;
+        }
+        
+        function sendMessageToCustomer() {
+            const subject = document.getElementById('messageSubject').value;
+            const content = document.getElementById('messageContent').value;
+            const sendEmail = document.getElementById('sendEmail').checked;
+            
+            if (!content.trim()) {
+                alert('Harap isi pesan terlebih dahulu');
+                return;
+            }
+            
+            // Simulate sending message
+            alert('Pesan berhasil dikirim ke customer!');
+            closeMessageModal();
+            
+            // Reset form
+            document.getElementById('messageSubject').value = '';
+            document.getElementById('messageContent').value = '';
+            document.getElementById('sendEmail').checked = false;
+        }
+        
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        };
+        
+        // Filter by date
+        document.querySelector('.date-filter button').addEventListener('click', function() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            if (startDate && endDate) {
+                // In real app, this would redirect with date params
+                console.log('Filter by date:', startDate, 'to', endDate);
+            }
+        });
+    </script>
+    
+    <div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

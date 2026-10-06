@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments/header :: head">
+        <title>Tambah Produk - FarmFresh Market</title>
+    </div>
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">Tambah Produk Baru</h1>
+                <a th:href="@{/farmer/dashboard}" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
+                </a>
+            </div>
+
+            <!-- ALERT SUCCESS -->
+            <div th:if="${success}" class="alert alert-success">
+                <i class="fas fa-check-circle"></i>
+                <span th:text="${success}"></span>
+            </div>
+
+            <!-- ALERT ERROR -->
+            <div th:if="${error}" class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i>
+                <span th:text="${error}"></span>
+            </div>
+            
+            <div class="form-container">
+                <form th:action="@{/farmer/product/add}" method="post" class="product-form">
+                    <div class="form-grid">
+                        <div class="form-section">
+                            <h3 class="form-section-title">Informasi Produk</h3>
+                            
+                            <div class="form-group">
+                                <label for="name">
+                                    <i class="fas fa-tag"></i> Nama Produk *
+                                </label>
+                                <input type="text" id="name" name="name" required 
+                                       class="form-control" placeholder="Contoh: Bayam Segar Organik">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="description">
+                                    <i class="fas fa-align-left"></i> Deskripsi *
+                                </label>
+                                <textarea id="description" name="description" required 
+                                          class="form-control" rows="4"
+                                          placeholder="Deskripsikan produk Anda..."></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="category">
+                                    <i class="fas fa-layer-group"></i> Kategori *
+                                </label>
+                                <select id="category" name="category" required class="form-control">
+                                    <option value="">Pilih Kategori</option>
+                                    <option value="SAYURAN">Sayuran</option>
+                                    <option value="BUAH">Buah-buahan</option>
+                                    <option value="BUMBU">Bumbu Dapur</option>
+                                    <option value="HERBAL">Tanaman Herbal</option>
+                                    <option value="ORGANIK">Organik</option>
+                                    <option value="LAINNYA">Lainnya</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h3 class="form-section-title">Harga & Stok</h3>
+                            
+                            <div class="form-group">
+                                <label for="price">
+                                    <i class="fas fa-money-bill-wave"></i> Harga (Rp) *
+                                </label>
+                                <input type="number" id="price" name="price" required 
+                                       class="form-control" min="100" step="100"
+                                       placeholder="Contoh: 5000">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="stock">
+                                    <i class="fas fa-box"></i> Stok Awal *
+                                </label>
+                                <input type="number" id="stock" name="stock" required 
+                                       class="form-control" min="1"
+                                       placeholder="Contoh: 50">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="imageUrl">
+                                    <i class="fas fa-image"></i> URL Gambar (Opsional)
+                                </label>
+                                <input type="url" id="imageUrl" name="imageUrl" 
+                                       class="form-control" 
+                                       placeholder="https://example.com/image.jpg">
+                                <small class="form-text">Kosongkan untuk menggunakan gambar default</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Simpan Produk
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="form-help">
+                    <h4><i class="fas fa-lightbulb"></i> Tips Menjual Produk</h4>
+                    <ul>
+                        <li>Gunakan nama yang jelas dan deskriptif</li>
+                        <li>Sertakan informasi yang akurat tentang produk</li>
+                        <li>Upload gambar berkualitas untuk menarik pembeli</li>
+                        <li>Perbarui stok secara berkala</li>
+                        <li>Harga yang kompetitif akan meningkatkan penjualan</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

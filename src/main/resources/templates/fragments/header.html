@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} ?: 'FarmFresh Market'">FarmFresh Market</title>
+     <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header th:fragment="header">
+        <nav class="navbar">
+            <div class="container">
+                <a th:href="@{/}" class="logo">
+                    <i class="fas fa-leaf"></i>
+                    <span>FarmFresh</span>
+                </a>
+                
+                <div class="nav-links">
+                    <a th:href="@{/}" class="nav-link">Home</a>
+                    <a th:href="@{/search}" class="nav-link">Produk</a>
+                    
+                    <th:block th:if="${user != null}">
+                        <th:block th:if="${user.role == 'CUSTOMER'}">
+                            <a th:href="@{/cart}" class="nav-link">
+                                <i class="fas fa-shopping-cart"></i>
+                                Keranjang
+                                <span th:if="${cartCount > 0}" class="cart-badge" th:text="${cartCount}">0</span>
+                            </a>
+                            <a th:href="@{/orders/my-orders}" class="nav-link">Pesanan</a>
+                        </th:block>
+                        
+                        <th:block th:if="${user.role == 'FARMER'}">
+                            <a th:href="@{/farmer/dashboard}" class="nav-link">Dashboard</a>
+                            <a th:href="@{/orders/farmer}" class="nav-link">Pesanan</a>
+                        </th:block>
+                        
+                        <div class="user-menu">
+                            <span class="user-greeting">Halo, <span th:text="${user.fullName}"></span></span>
+                            <a th:href="@{/logout}" class="btn btn-outline">Logout</a>
+                        </div>
+                    </th:block>
+                    
+                    <th:block th:unless="${user != null}">
+                        <a th:href="@{/login}" class="btn btn-outline">Login</a>
+                        <a th:href="@{/register}" class="btn btn-primary">Register</a>
+                    </th:block>
+                </div>
+                
+                <button class="menu-toggle" onclick="toggleMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <script>
+        function toggleMenu() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

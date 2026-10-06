@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments/header :: head">
+        <title>Pesanan Berhasil - FarmFresh Market</title>
+    </div>
+</head>
+<body>
+
+<div th:replace="fragments/header :: header"></div>
+
+<main class="main-content">
+    <div class="container">
+        <div class="order-success-page">
+
+            <div class="order-success-card">
+
+                <!-- HEADER -->
+                <div class="order-success-header">
+                    <i class="fas fa-check-circle"></i>
+                    <h1>Pesanan Berhasil Dibuat!</h1>
+                </div>
+
+                <!-- DETAIL PESANAN -->
+                <div th:if="${order != null}" class="order-detail-box">
+                    <h3>Detail Pesanan</h3>
+
+                    <div class="order-detail-grid">
+                        <strong>Nomor Pesanan</strong>
+                        <span th:text="'#' + ${order.id}"></span>
+
+                        <strong>Tanggal</strong>
+                        <span th:text="${#temporals.format(order.orderDate, 'dd MMM yyyy')}"></span>
+
+                        <strong>Status</strong>
+                        <span class="status status-pending" th:text="${order.status}"></span>
+
+                        <strong>Alamat Pengiriman</strong>
+                        <span th:text="${order.shippingAddress}"></span>
+
+                        <div class="order-total-highlight">
+                            <span>Total Pesanan</span>
+                            <span th:text="'Rp ' + ${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')}"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PESAN -->
+                <div class="success-message">
+                    <p><strong>Terima kasih telah berbelanja di FarmFresh Market!</strong></p>
+                    <p>Pesanan Anda sedang diproses oleh petani. Anda akan menerima update melalui email.</p>
+                </div>
+
+                <!-- ACTION -->
+                <div class="order-success-actions">
+                    <a th:href="@{/orders/my-orders}" class="btn btn-primary">
+                        <i class="fas fa-clipboard-list"></i> Lihat Pesanan Saya
+                    </a>
+                    <a th:href="@{/}" class="btn btn-outline">
+                        <i class="fas fa-home"></i> Kembali ke Beranda
+                    </a>
+                </div>
+
+                <!-- INFO TAMBAHAN -->
+                <div class="order-info-section">
+                    <div class="order-info">
+                        <i class="fas fa-truck"></i>
+                        <span>Pesanan akan dikirim dalam 1–3 hari kerja</span>
+                    </div>
+                    <div class="order-info">
+                        <i class="fas fa-phone"></i>
+                        <span>Hubungi 021-1234-5678 jika ada pertanyaan</span>
+                    </div>
+                    <div class="order-info">
+                        <i class="fas fa-envelope"></i>
+                        <span>Email konfirmasi akan dikirim ke email Anda</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>
